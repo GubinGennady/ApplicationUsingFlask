@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %}{{ dataset.name }}{% endblock %}
+{% block title %} {{ dataset.name }} {% endblock %}
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>{{ dataset.name }}</h1>
     <div>
-        <a href="" class="btn btn-outline-primary me-2">
+        <a href="{{url_for('update_dataset', dataset_id=dataset.id)}}" class="btn btn-outline-primary me-2">
             <i class="bi bi-pencil"></i> Обновить
         </a>
         <a href="/" class="btn btn-outline-secondary">
@@ -17,48 +17,49 @@
 
 <div class="card mb-4">
     <div class="card-header">
-        <h5 class="mb-0">Графики данных</h5>
+        <h5 class="mb-0">{{ title }}</h5>
     </div>
     <div class="card-body">
-        <img src="data:image/png;base64,{{ plot }}" class="img-fluid" alt="Data Visualization">
+        <img src="{{ plot }}" alt="EMG and Angle Data Visualization" style="width: 100%; max-width: 800px;">
+        <!--<img src="data:image/png;base64,{{ plot }}" class="img-fluid" alt="Data Visualization">-->
     </div>
 </div>
 <div class="row">
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Статистика EMG</h5>
+                <h5 class="mb-0">{{ EMGStatistics }}</h5>
             </div>
             <div class="card-body">
                 <table class="table table-striped">
                     <thead>
-                        <tr>
-                            <th>Канал</th>
-                            <th>Среднее</th>
-                            <th>Максимум</th>
-                        </tr>
+                    <tr>
+                        <th>Канал</th>
+                        <th>Среднее</th>
+                        <th>Максимум</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>EMG1</td>
-                            <td>{{ "%.2f"|format(stats.emg1.mean) }}</td>
-                            <td>{{ "%.2f"|format(stats.emg1.max) }}</td>
-                        </tr>
-                        <tr>
-                            <td>EMG2</td>
-                            <td>{{ "%.2f"|format(stats.emg2.mean) }}</td>
-                            <td>{{ "%.2f"|format(stats.emg2.max) }}</td>
-                        </tr>
-                        <tr>
-                            <td>EMG3</td>
-                            <td>{{ "%.2f"|format(stats.emg3.mean) }}</td>
-                            <td>{{ "%.2f"|format(stats.emg3.max) }}</td>
-                        </tr>
-                        <tr>
-                            <td>EMG4</td>
-                            <td>{{ "%.2f"|format(stats.emg4.mean) }}</td>
-                            <td>{{ "%.2f"|format(stats.emg4.max) }}</td>
-                        </tr>
+                    <tr>
+                        <td>EMG1</td>
+                        <td>{{ "%.2f"|format(stats.emg1.mean) }}</td>
+                        <td>{{ "%.2f"|format(stats.emg1.max) }}</td>
+                    </tr>
+                    <tr>
+                        <td>EMG2</td>
+                        <td>{{ "%.2f"|format(stats.emg2.mean) }}</td>
+                        <td>{{ "%.2f"|format(stats.emg2.max) }}</td>
+                    </tr>
+                    <tr>
+                        <td>EMG3</td>
+                        <td>{{ "%.2f"|format(stats.emg3.mean) }}</td>
+                        <td>{{ "%.2f"|format(stats.emg3.max) }}</td>
+                    </tr>
+                    <tr>
+                        <td>EMG4</td>
+                        <td>{{ "%.2f"|format(stats.emg4.mean) }}</td>
+                        <td>{{ "%.2f"|format(stats.emg4.max) }}</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -68,23 +69,23 @@
     <div class="col-md-6 mb-4">
         <div class="card">
             <div class="card-header">
-                <h5 class="mb-0">Статистика угла</h5>
+                <h5 class="mb-0">{{ AngleStatistics }}</h5>
             </div>
             <div class="card-body">
                 <table class="table table-striped">
                     <tbody>
-                        <tr>
-                            <td>Среднее значение</td>
-                            <td>{{ "%.2f"|format(stats.angle.mean) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Максимальное значение</td>
-                            <td>{{ "%.2f"|format(stats.angle.max) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Количество пиков</td>
-                            <td>{{ stats.angle.peaks }}</td>
-                        </tr>
+                    <tr>
+                        <td>Среднее значение</td>
+                        <td>{{ "%.2f"|format(stats.angle.mean) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Максимальное значение</td>
+                        <td>{{ "%.2f"|format(stats.angle.max) }}</td>
+                    </tr>
+                    <tr>
+                        <td>Количество пиков</td>
+                        <td>{{ stats.angle.peaks }}</td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
@@ -94,32 +95,32 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Первые 10 записей</h5>
+        <h5 class="mb-0">{{Records}}</h5>
     </div>
     <div class="card-body">
         <div class="table-responsive">
             <table class="table table-striped table-hover">
                 <thead>
-                    <tr>
-                        <th>Timestamp</th>
-                        <th>EMG1</th>
-                        <th>EMG2</th>
-                        <th>EMG3</th>
-                        <th>EMG4</th>
-                        <th>Angle</th>
-                    </tr>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>EMG1</th>
+                    <th>EMG2</th>
+                    <th>EMG3</th>
+                    <th>EMG4</th>
+                    <th>Angle</th>
+                </tr>
                 </thead>
                 <tbody>
-                    {% for row in data[:10] %}
-                        <tr>
-                            <td>{{ row.timestamp }}</td>
-                            <td>{{ "%.2f"|format(row.emg1) }}</td>
-                            <td>{{ "%.2f"|format(row.emg2) }}</td>
-                            <td>{{ "%.2f"|format(row.emg3) }}</td>
-                            <td>{{ "%.2f"|format(row.emg4) }}</td>
-                            <td>{{ "%.2f"|format(row.angle) }}</td>
-                        </tr>
-                    {% endfor %}
+                {% for row in data[:10] %}
+                <tr>
+                    <td>{{ row.timestamp }}</td>
+                    <td>{{ "%.2f"|format(row.emg1) }}</td>
+                    <td>{{ "%.2f"|format(row.emg2) }}</td>
+                    <td>{{ "%.2f"|format(row.emg3) }}</td>
+                    <td>{{ "%.2f"|format(row.emg4) }}</td>
+                    <td>{{ "%.2f"|format(row.angle) }}</td>
+                </tr>
+                {% endfor %}
                 </tbody>
             </table>
         </div>

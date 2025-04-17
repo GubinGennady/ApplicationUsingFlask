@@ -14,7 +14,7 @@ DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 't')
 UPLOAD_FOLDER = 'uploads'
 
 # Разрешенные хосты - с каких адресов можно обращаться к приложению
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '127.0.0.1').split(',')  # Только локальные подключения
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS')  # Только локальные подключения
 
 # ========= НАСТРОЙКИ БАЗЫ ДАННЫХ =========
 DB_TYPE = os.getenv('DB_TYPE')

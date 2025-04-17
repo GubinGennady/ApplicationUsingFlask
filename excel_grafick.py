@@ -1,16 +1,21 @@
 # Импорт необходимых библиотек
 import pandas as pd  # Для работы с данными в табличной форме
-import matplotlib.pyplot as plt  # Для построения графиков
-from io import BytesIO  # Для работы с бинарными данными в памяти
-import base64  # Для кодирования изображения в base64
+
+import matplotlib
+
+matplotlib.use('Agg')  # Устанавливаем бэкенд Agg до импорта plt
+
+import matplotlib.pyplot as plt
+from io import BytesIO
+import base64
 
 
 def read_xlsx_data(file_path):
     """
-       Чтение данных из Excel-файла и проверка структуры данных
-       :param file_path: путь к файлу Excel
-       :return: DataFrame с данными или None, если произошла ошибка
-       """
+   Чтение данных из Excel-файла и проверка структуры данных
+   :param file_path: путь к файлу Excel
+   :return: DataFrame с данными или None, если произошла ошибка
+   """
     try:
         # Чтение Excel-файла с использованием движка openpyxl
         df = pd.read_excel(file_path, engine='openpyxl')
@@ -31,11 +36,11 @@ def read_xlsx_data(file_path):
 
 def count_peaks(angle_series, th=20):
     """
-        Подсчет пиков в данных угла наклона
-        :param angle_series: Series с данными угла наклона
-        :param th: пороговое значение для определения пика (по умолчанию 20)
-        :return: количество обнаруженных пиков
-        """
+    Подсчет пиков в данных угла наклона
+    :param angle_series: Series с данными угла наклона
+    :param th: пороговое значение для определения пика (по умолчанию 20)
+    :return: количество обнаруженных пиков
+    """
     peaks = 0
     min_val = angle_series.iloc[0]  # Начальное минимальное значение
 
@@ -73,33 +78,38 @@ def create_plot(df):
     """
     Создание графиков по данным и возврат их в виде base64-encoded изображения
     :param df: DataFrame с исходными данными
-    :return: строка с изображением в формате base64
+    :return: строка с изображением в формате base64 для вставки в HTML
     """
-    # Создаем фигуру с двумя субплогами (один под другим)
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6))
+    # Создаем фигуру с двумя субплогами
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 8))  # Увеличил высоту для лучшего отображения
+    plt.subplots_adjust(hspace=0.5)  # Добавил больше пространства между графиками
 
-    # Построение графиков EMG-сигналов на первом субплоте
-    ax1.plot(df['timestamp'], df['emg1'], label='ENG1')
-    ax1.plot(df['timestamp'], df['emg2'], label='ENG2')
-    ax1.plot(df['timestamp'], df['emg3'], label='ENG3')
-    ax1.plot(df['timestamp'], df['emg4'], label='ENG4')
-    ax1.set_title('ENGS')
+    # Графики EMG-сигналов
+    ax1.plot(df['timestamp'], df['emg1'], label='EMG1')
+    ax1.plot(df['timestamp'], df['emg2'], label='EMG2')
+    ax1.plot(df['timestamp'], df['emg3'], label='EMG3')
+    ax1.plot(df['timestamp'], df['emg4'], label='EMG4')
+    ax1.set_title('EMG Signals')
     ax1.set_xlabel('Timestamp')
-    ax1.set_ylabel('Value')
-    ax1.legend()
+    ax1.set_ylabel('Amplitude')
+    ax1.legend(loc='upper right')  # Оптимальное расположение легенды
 
-    # Построение графика угла на втором субплоте
-    ax2.plot(df['timestamp'], df['angle'], label='Angle', color='red')
-    ax2.set_title('Angle')  # Исправлено: было ax1 вместо ax2
-    ax2.set_xlabel('Timestamp')  # Исправлено: было ax1 вместо ax2
-    ax2.set_ylabel('Angle')  # Исправлено: было ax1 вместо ax2
-    ax2.legend()  # Исправлено: было ax1 вместо ax2
+    # График угла
+    ax2.plot(df['timestamp'], df['angle'], color='red', label='Angle')
+    ax2.set_title('Angle Variation')
+    ax2.set_xlabel('Timestamp')
+    ax2.set_ylabel('Degrees')
+    ax2.legend(loc='upper right')
+    ax2.grid(True)  # Добавил сетку для лучшей читаемости
 
-    # Сохраняем график в бинарный буфер
-    b = BytesIO()
-    plt.savefig(b, format='png', dpi=100, bbox_inches='tight')
-    b.seek(0)  # Перемещаем указатель в начало буфера
-    plt.close()  # Закрываем фигуру, чтобы освободить память
+    # Сохранение в буфер
+    buf = BytesIO()
+    plt.savefig(buf, format='png', dpi=120, bbox_inches='tight')
+    plt.close(fig)  # Важно: закрываем фигуру
 
-    # Кодируем изображение в base64 и возвращаем как строку
-    return base64.b64encode(b.read()).decode('utf-8')
+    # Подготовка base64 строки
+    buf.seek(0)
+    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    buf.close()
+
+    return f"data:image/png;base64,{image_base64}"
