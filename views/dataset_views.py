@@ -50,7 +50,7 @@ def update_dataset(dataset_id):
         'New_set': 'Новое название набора',
         'New_data_file': 'Новый файл данных (XLSX)'
     }
-
+    
     # Получаем набор данных из базы или возвращаем 404
     dataset = Dataset.query.get_or_404(dataset_id)
 
