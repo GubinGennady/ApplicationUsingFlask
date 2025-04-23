@@ -31,5 +31,5 @@ ALLOWED_EXTENSIONS = {'xlsx'}
 # Формат: "тип_бд://пользователь:пароль@хост:порт/имя_бд"
 # 1. Сначала пробуем взять готовую строку из DATABASE_URL
 # 2. Если нет - собираем из отдельных компонентов
-SQLALCHEMY = os.getenv('DATABASE_URL') or \
-             f'{DB_TYPE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL') or \
+                          f'{DB_TYPE}://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'

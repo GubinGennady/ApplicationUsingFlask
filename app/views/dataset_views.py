@@ -1,10 +1,10 @@
 # Импорт необходимых модулей Flask
-from flask import render_template, redirect, request, url_for
-from models import Dataset
-from app_one import db
-from config import setings
 import os
-from excel_grafick import read_xlsx_data, get_dataset_stats, create_plot
+from flask import render_template, redirect, request, url_for
+from app.models import Dataset
+from app.excel_grafick import read_xlsx_data, get_dataset_stats, create_plot
+from app.extensions import db
+from config import settings
 
 
 def view_dataset(dataset_id):
@@ -50,7 +50,7 @@ def update_dataset(dataset_id):
         'New_set': 'Новое название набора',
         'New_data_file': 'Новый файл данных (XLSX)'
     }
-    
+
     # Получаем набор данных из базы или возвращаем 404
     dataset = Dataset.query.get_or_404(dataset_id)
 
@@ -65,10 +65,10 @@ def update_dataset(dataset_id):
         if file.filename == '':
             return redirect(request.url)
         # Проверяем расширение файла
-        if file and '.' in file.filename and file.filename.rsplit('.')[-1].lower() in setings.ALLOWED_EXTENSIONS:
+        if file and '.' in file.filename and file.filename.rsplit('.')[-1].lower() in settings.ALLOWED_EXTENSIONS:
             # Сохраняем файл
             filename = file.filename
-            file_path = os.path.join(setings.UPLOAD_FOLDER, filename)
+            file_path = os.path.join(settings.UPLOAD_FOLDER, filename)
             file.save(file_path)
 
             # Пробуем прочитать данные из файла

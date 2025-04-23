@@ -1,7 +1,7 @@
 # Импорт view-функций из модулей представлений
-from views.main_views import index, add_dataset
-from views.dataset_views import view_dataset, update_dataset
-from api.datasets import update_dataset_api
+from app.views.main_views import index, add_dataset
+from app.views.dataset_views import view_dataset, update_dataset
+from app.api.datasets import update_dataset_api
 
 
 def register_routes(app):

@@ -1,9 +1,9 @@
 # Импорт необходимых модулей и компонентов Flask
-from flask import render_template, redirect, request, url_for
-from models import Dataset
-from app_one import db
-from config import setings
 import os
+from flask import render_template, redirect, request, url_for
+from app.extensions import db
+from config import settings
+from app.models import Dataset
 
 
 def index():
@@ -60,16 +60,16 @@ def add_dataset():
             return redirect(request.url)
 
         # Проверяем что файл есть и его расширение разрешено
-        if file and '.' in file.filename and file.filename.rsplit('.')[-1].lower() in setings.ALLOWED_EXTENSIONS:
+        if file and '.' in file.filename and file.filename.rsplit('.')[-1].lower() in settings.ALLOWED_EXTENSIONS:
             # Сохраняем оригинальное имя файла
             filename = file.filename
 
             # Создаем папку для загрузок, если она не существует
-            if not os.path.exists(setings.UPLOAD_FOLDER):
-                os.mkdir(setings.UPLOAD_FOLDER)
+            if not os.path.exists(settings.UPLOAD_FOLDER):
+                os.mkdir(settings.UPLOAD_FOLDER)
 
             # Формируем полный путь для сохранения файла
-            file_path = os.path.join(setings.UPLOAD_FOLDER, filename)
+            file_path = os.path.join(settings.UPLOAD_FOLDER, filename)
 
             # Сохраняем файл на сервер
             file.save(file_path)
@@ -85,7 +85,7 @@ def add_dataset():
             db.session.commit()
 
             # Перенаправляем на главную страницу после успешного сохранения
-            return redirect('/')
+            return redirect(url_for('index'))
 
     # Для GET-запроса или если POST-запрос не прошел валидацию
     # Отображаем шаблон формы с переданным контекстом

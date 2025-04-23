@@ -3,9 +3,9 @@ from flask import request, jsonify
 from werkzeug.utils import secure_filename
 import os
 
-from excel_grafick import read_xlsx_data
-from models import Dataset, db
-from config import setings
+from config import settings
+from app.excel_grafick import read_xlsx_data
+from app.models import Dataset, db
 
 
 def update_dataset_api(dataset_id):
@@ -39,7 +39,7 @@ def update_dataset_api(dataset_id):
             # Безопасно обрабатываем имя файла
             filename = secure_filename(file.filename)
             # Формируем полный путь для сохранения
-            file_path = os.path.join(setings.UPLOAD_FOLDER, filename)
+            file_path = os.path.join(settings.UPLOAD_FOLDER, filename)
 
             try:
                 # Сохраняем файл
@@ -92,4 +92,4 @@ def allowed_file(filename):
         bool: True если расширение разрешено, иначе False
     """
     return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in setings.ALLOWED_EXTENSIONS
+        filename.rsplit('.', 1)[1].lower() in settings.ALLOWED_EXTENSIONS
